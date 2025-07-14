@@ -103,7 +103,7 @@ export default function Add() {
     const initialFetch = async () => {
       setLoading(true);
       try {
-        const response = await fetch('https://api.scryfall.com/cards/search?q=black+lotus');
+        const response = await fetch('https://api.scryfall.com/cards/search?unique=prints&q=!"Black Lotus"');
         const data = await response.json();
         setCardPrints(data.data);
         setChosenPrint(data.data[0]);
@@ -246,11 +246,24 @@ export default function Add() {
           {cardPrints.length > 1 && (
             <div>
               <h3 className='text-xl font-semibold mb-4'>Other Prints of {cardName} ({cardPrints.length})</h3>
-
+              <div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4'>
+                {cardPrints.map((print) => (
+                  <div key={print.id} className='cursor-pointer' onClick={() => setChosenPrint(print)}>
+                    <img 
+                      src={print.image_uris?.small || print.card_faces?.[0].image_uris?.small || 'https://static.wikia.nocookie.net/mtgsalvation_gamepedia/images/f/f8/Magic_card_back.jpg/revision/latest?cb=20140813141013'}
+                      alt={`${print.name} - ${print.set_name}`}
+                      className='rounded-lg shadow-md w-full h-auto hover:scale-105 transition-transform duration-200'
+                      onError={(e) =>  { (e.target as HTMLImageElement).onerror = null; (e.target as HTMLImageElement).src = 'https://static.wikia.nocookie.net/mtgsalvation_gamepedia/images/f/f8/Magic_card_back.jpg/revision/latest?cb=20140813141013'; }}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
         </div>
+        
+
       </div>
     );
   }
