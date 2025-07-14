@@ -65,7 +65,7 @@ export default function Add() {
     setChosenPrint(null);
 
     try {
-      const response = await fetch(`https://api.scryfall.com/cards/search?q=${encodeURIComponent(cardName)}`);
+      const response = await fetch(`https://api.scryfall.com/cards/search?unique=prints&q=!"${encodeURIComponent(cardName)}"`);
 
       if (response.status === 404) {
         throw new Error('No cards with that name');
