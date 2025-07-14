@@ -1,6 +1,6 @@
 'use client'
 import Link from "next/link";
-import { use, useState, useEffect } from "react";
+import { useState } from "react";
 
 export const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);

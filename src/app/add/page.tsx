@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, useCallback, useRef, use } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 
 interface ImageUris {
   small: string;
