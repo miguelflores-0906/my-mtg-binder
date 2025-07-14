@@ -168,6 +168,7 @@ export default function Add() {
       // console.log(`Updated cardName: ${cardName}`);
       setSuggestions([]);
       // console.log(suggestions)
+      // fetchCard(suggestion);
     };
 
     useEffect(() => {
@@ -196,7 +197,7 @@ export default function Add() {
           <h1 className='text-2xl font-bold text-white mb-4'>Add a Card to your Binder</h1>
 
           {/* user input */}
-          <div className='flex flex-col sm:flex-row gap-4 mb-6'>
+          <div className='flex flex-col sm:flex-row gap-2 mb-6' ref={searchContainerRef}>
             <div className='relative flex-grow'>
               <input 
                 type="text"
@@ -204,7 +205,7 @@ export default function Add() {
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
                 placeholder="Enter card name...my favorite is Counterspell :b"
-                className='flex-1 p-2 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:border-blue-500'
+                className='flex-grow w-full bg-gray-700 text-white placeholder-gray-400 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-300'
               />
               { suggestions.length > 0 && (
                 <ul className='absolute z-10 w-full rounded-lg mt-1 shadow-lg max-h-60 overflow-y-auto bg-gray-600'>
@@ -332,7 +333,7 @@ export default function Add() {
           {/* Card prints list */}
           {cardPrints.length > 1 && (
             <div>
-              <h3 className='text-xl font-semibold mb-4'>Other Prints of {cardName} ({cardPrints.length})</h3>
+              <h3 className='text-xl font-semibold mb-4'>Other Prints ({cardPrints.length})</h3>
               <div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4'>
                 {cardPrints.map((print) => (
                   <div key={print.id} className='cursor-pointer' onClick={() => setChosenPrint(print)}>
