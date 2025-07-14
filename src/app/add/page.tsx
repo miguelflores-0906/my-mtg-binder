@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 export default function Add() {
 
@@ -107,27 +107,7 @@ export default function Add() {
           )}
 
           {/* chosen print details */}
-          {chosenPrint && (
-            <div className='p-4 rounded-lg animate-fade-in mb-8'>
-              <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 items-start'>
-
-                {/* image */}
-                  <div className='flex flex-col sm:flex-row gap-4 justify-center items-center'>
-                    {chosenPrint.card_faces ? (
-                      chosenPrint.card_faces.map((face, index) => (
-                        <img
-                          key={index}
-                          src={face.image_uris?.normal || face.image_uris?.large}
-                          alt={face.name}
-                          className='w-64 h-auto rounded-lg shadow-lg'
-                          onError={(e) => {e.target.onerror = null; e.target.src='https://static.wikia.nocookie.net/mtgsalvation_gamepedia/images/f/f8/Magic_card_back.jpg/revision/latest?cb=20140813141013'}} // fallback image
-                        />
-                      ))
-                    )}
-                  </div>
-              </div>
-            </div>
-          )}
+          
         </div>
       </div>
     );
