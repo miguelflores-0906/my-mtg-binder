@@ -17,7 +17,7 @@ export async function POST(request) {
         await newCard.save();
     }
     catch (error) {
-        return NextResponse.json({message:"Error saving card to database", error: error.message}, {status: 500});
+        return NextResponse.json({message:"Error saving card to database"}, {status: 500});
     }
     return NextResponse.json({message: "Card added successfully"}, {status: 200});
 }
