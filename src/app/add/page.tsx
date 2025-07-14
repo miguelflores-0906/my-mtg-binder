@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef, use } from 'react';
 
 interface ImageUris {
   small: string;
@@ -52,9 +52,12 @@ export default function Add() {
   const [chosenPrint, setChosenPrint] = useState<Card | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
 
-  const fetchCard = useCallback(async () => {
-    if (!cardName) {
+  const fetchCard = useCallback(async (nameToFetch?: string) => {
+    const finalCardName = nameToFetch || cardName;
+    if (!finalCardName) {
       setError('Enter Card Name.');
       return;
     }
@@ -63,6 +66,8 @@ export default function Add() {
     setError('');
     setCardPrints([]);
     setChosenPrint(null);
+    setSuggestions([]);
+    
 
     try {
       const response = await fetch(`https://api.scryfall.com/cards/search?unique=prints&q=!"${encodeURIComponent(cardName)}"`);
@@ -103,7 +108,7 @@ export default function Add() {
     const initialFetch = async () => {
       setLoading(true);
       try {
-        const response = await fetch('https://api.scryfall.com/cards/search?unique=prints&q=!"Black Lotus"');
+        const response = await fetch('https://api.scryfall.com/cards/search?unique=prints&q=!"Nekusar the Mind Razer"');
         const data = await response.json();
         setCardPrints(data.data);
         setChosenPrint(data.data[0]);
@@ -119,6 +124,72 @@ export default function Add() {
     initialFetch();
   }, []);
 
+    const fetchSuggestions = async (query: string) => {
+      if (query.length < 2) {
+        setSuggestions([]);
+        return;
+      }
+      try {
+        const response = await fetch(`https://api.scryfall.com/cards/autocomplete?q=${encodeURIComponent(query)}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch suggestions');
+        }
+
+        const data = await response.json();
+        setSuggestions(data.data || []);
+      }
+      catch (err) {
+        setError('Failed to fetch suggestions');
+        setSuggestions([]);
+      }
+    };
+
+    // limit api calls to scryfall
+    const debounce = (func: (...args: any[]) => void, delay: number) => {
+      let timeout: NodeJS.Timeout;
+      return (...args: any[]) => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func(...args), delay);
+      };
+    };
+
+    const debouncedFetchSuggestions = useCallback(debounce(fetchSuggestions, 300), []);
+    
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setCardName(value);
+      debouncedFetchSuggestions(value);
+    };
+
+    const handleSuggestionClick = (suggestion: string) => {
+      // console.log(`Suggestion clicked: ${suggestion}`);
+      // console.log(`Current cardName: ${cardName}`);
+      setCardName(suggestion);
+      // console.log(`Updated cardName: ${cardName}`);
+      setSuggestions([]);
+      // console.log(suggestions)
+    };
+
+    useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+        if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
+          setSuggestions([]);
+        }
+      };
+
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }, []);
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        fetchCard();
+      }
+    }
+
     return (
       <div className='text-white min-h-screen flex flex-col items-center p-4 sm:p-6 font-sans'>
         <div className='w-full max-w-5xl mx-auto bg-gray-900 shadow-lg p-6'>
@@ -126,16 +197,32 @@ export default function Add() {
 
           {/* user input */}
           <div className='flex flex-col sm:flex-row gap-4 mb-6'>
-            <input 
-              type="text"
-              value={cardName}
-              onChange={(e) => setCardName(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && fetchCard()}
-              placeholder="Enter card name...my favorite is Counterspell :b"
-              className='flex-1 p-2 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:border-blue-500'
-            />
+            <div className='relative flex-grow'>
+              <input 
+                type="text"
+                value={cardName}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
+                placeholder="Enter card name...my favorite is Counterspell :b"
+                className='flex-1 p-2 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:border-blue-500'
+              />
+              { suggestions.length > 0 && (
+                <ul className='absolute z-10 w-full rounded-lg mt-1 shadow-lg max-h-60 overflow-y-auto bg-gray-600'>
+                  {suggestions.map((suggestion, index) => (
+                    <li 
+                      key={index} 
+                      onClick={() => handleSuggestionClick(suggestion)}
+                      className='px-4 py-2 hover:bg-gray-700 cursor-pointer'
+                    >
+                      {suggestion}
+                    </li>
+                  ))}
+                </ul>
+                )}
+            </div>
+            
             <button 
-              onClick={fetchCard}
+              onClick={() => fetchCard()}
               disabled={loading}
               className='px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded disabled:opacity-50'
               >
