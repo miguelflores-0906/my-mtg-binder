@@ -1,9 +1,13 @@
-
+'use client';
+import React, { useState } from 'react';
+import axios from 'axios';
 
 export default function Home() {
+
+  
+
   return (
-    <div>
-      <h1>Welcome to My App</h1>
-    </div>
+    <>
+    </>
   );
 }

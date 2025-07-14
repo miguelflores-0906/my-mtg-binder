@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import axios from 'axios';
 
 interface ImageUris {
   small: string;
@@ -191,6 +192,31 @@ export default function Add() {
       }
     }
 
+    const handleAddToBinder = async (e: React.MouseEvent) => {
+      e.preventDefault();
+      if (!chosenPrint) {
+        setError('No card selected');
+        return;
+      }
+
+      try {
+        const imageLink = chosenPrint.card_faces?.[0]?.image_uris?.small || chosenPrint.image_uris?.small || '';
+        const response = await axios.post('/api/addCard', {
+          scryfallId: chosenPrint.id,
+          name: chosenPrint.name,
+          imageUrl: imageLink
+        });
+
+        if (response.status === 200) {
+          alert('Card added successfully!');
+        } else {
+          throw new Error('Failed to add card');
+        }
+      } catch (err) {
+        setError((err as Error).message);
+      }
+    }
+
     return (
       <div className='text-white min-h-screen flex flex-col items-center p-4 sm:p-6 font-sans'>
         <div className='w-full max-w-5xl mx-auto bg-gray-900 shadow-lg p-6'>
@@ -320,6 +346,7 @@ export default function Add() {
                   <button
                     rel="noopener noreferrer"
                     className='mt-4 inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded'
+                    onClick={handleAddToBinder}
                   >
                     Add to My Binder
                   </button>
