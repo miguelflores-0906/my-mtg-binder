@@ -16,12 +16,19 @@ const mtgCardSchema = new mongoose.Schema({
         index: true,
     },
 
-    imageUrl: {
+    set_code: {
         type: String,
         required: true,
-    }
-}, {
-    timestamps: true,
+        unique: false,
+        index: true,
+    },
+
+    collector_number: {
+        type: String,
+        required: true,
+        unique: false,
+        index: true,
+    },
 });
 
 const Card = mongoose.models.MtgCard || mongoose.model("MtgCard", mtgCardSchema);

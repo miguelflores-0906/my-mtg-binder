@@ -43,6 +43,8 @@ interface Card {
   toughness?: string;
   prices: Prices;
   set_name: string;
+  set: string;
+  collector_number: string;
   card_faces?: CardFace[];
 }
 
@@ -200,11 +202,11 @@ export default function Add() {
       }
 
       try {
-        const imageLink = chosenPrint.card_faces?.[0]?.image_uris?.small || chosenPrint.image_uris?.small || '';
         const response = await axios.post('/api/addCard', {
           scryfallId: chosenPrint.id,
           name: chosenPrint.name,
-          imageUrl: imageLink
+          set_code: chosenPrint.set,
+          collector_number: chosenPrint.collector_number,
         });
 
         if (response.status === 200) {
@@ -331,6 +333,8 @@ export default function Add() {
                   <div className='border-t border-gray-600 pt-4 mt-2'>
                     <h3 className='text-xl font-semibold mb-2'>Print Details</h3>
                     <p className='text-gray-300'>Set: {chosenPrint.set_name}</p>
+                    <p className='text-gray-300'>Set Code: {chosenPrint.set}</p>
+                    <p className='text-gray-300'>Collector Number: {chosenPrint.collector_number}</p>
                     <p className='text-gray-300'>Released: {new Date(chosenPrint.released_at).toLocaleDateString()}</p>
                   </div>
 
