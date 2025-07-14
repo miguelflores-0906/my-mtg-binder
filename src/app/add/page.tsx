@@ -42,8 +42,8 @@ export default function Add() {
       // defaults to first printing in the list
       setChosenPrint(data.data[0]);
     }
-    catch (Error) {
-      setError(Error.message);
+    catch (err: unknown) {
+      setError((err as Error).message);
       setCardPrints([]);
       setChosenPrint(null);
       setLoading(false);
