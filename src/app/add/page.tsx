@@ -200,10 +200,11 @@ export default function Add() {
       }
 
       try {
+        const imageLink = chosenPrint.card_faces?.[0]?.image_uris?.small || chosenPrint.image_uris?.small || '';
         const response = await axios.post('/api/addCard', {
           scryfallId: chosenPrint.id,
           name: chosenPrint.name,
-          imageUrl: chosenPrint.image_uris?.small || chosenPrint.image_uris?.large || ''
+          imageUrl: imageLink
         });
 
         if (response.status === 200) {
