@@ -213,13 +213,43 @@ export default function Add() {
                     </>
                   )}
 
-                  
+                  {/* Print details */}
+                  <div className='border-t border-gray-600 pt-4 mt-2'>
+                    <h3 className='text-xl font-semibold mb-2'>Print Details</h3>
+                    <p className='text-gray-300'>Set: {chosenPrint.set_name}</p>
+                    <p className='text-gray-300'>Released: {new Date(chosenPrint.released_at).toLocaleDateString()}</p>
+                  </div>
+
+                  {/* Prices */}
+                  <div className='border-t border-gray-600 pt-4 mt-2'>
+                    <h3 className='text-xl font-semibold mb-2'>Prices</h3>
+                    <p className='text-lg'><span className='font-bold text-green-400'>USD:</span> ${chosenPrint.prices.usd || 'N/A'}</p>
+                    <p className='text-lg'><span className='font-bold text-green-400'>USD Foil:</span> ${chosenPrint.prices.usd_foil || 'N/A'}</p>
+                    <p className='text-lg'><span className='font-bold text-blue-400'>PHPx50:</span> ₱{(Number(chosenPrint.prices.usd) * 50 )|| 'N/A'}</p>
+                    <p className='text-lg'><span className='font-bold text-blue-400'>PHPx50 Foil:</span> ₱{(Number(chosenPrint.prices.usd_foil) * 50 ) || 'N/A'}</p>
+                  </div>
+
+                  <button
+                    rel="noopener noreferrer"
+                    className='mt-4 inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded'
+                  >
+                    Add to My Binder
+                  </button>
 
                 </div>
 
               </div>
             </div>
           )}
+
+          {/* Card prints list */}
+          {cardPrints.length > 1 && (
+            <div>
+              <h3 className='text-xl font-semibold mb-4'>Other Prints of {cardName} ({cardPrints.length})</h3>
+
+            </div>
+          )}
+
         </div>
       </div>
     );
