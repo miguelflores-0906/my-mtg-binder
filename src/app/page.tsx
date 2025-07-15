@@ -35,12 +35,12 @@ interface ScryfallApiResponse {
 }
 
 // Card Component
-const Card = ({ card }: { card: ScryfallCard }) => {
+const Card = ({ card, onRemove }: { card: ScryfallCard; onRemove: (id: string) => void; }) => {
   const imageUrl = card.image_uris ? card.image_uris.normal : card.card_faces ? card.card_faces[0].image_uris.normal : null;
   const price = card.prices.usd ? `$${card.prices.usd}` : (card.prices.eur ? `€${card.prices.eur}` :  'N/A');
   const peso = (Number)(card.prices.usd) * 50; // Assuming 1 USD = 18.5 MXN, adjust as needed
   return (
-    <div className='bg-gray-800 rounded-lg shadow-lg overflow-hidden flex flex-col h-full transition-all duration-300 ease-in-out hover:shadow-2xl '>
+    <div className='bg-gray-800 rounded-lg shadow-lg overflow-hidden flex flex-col h-full transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 relative group'>
     <div className='relative'>
         {imageUrl ? (
           <img
@@ -64,6 +64,16 @@ const Card = ({ card }: { card: ScryfallCard }) => {
           <p className='text-lg font-semibold text-red-400'>₱{peso}</p>
       </div>
     </div>
+    <button
+      onClick={() => onRemove(card.id)}
+      className='absolute bottom-3 right-3 bg-red-600 hover:bg-red-700 text-white rounded-full w-8 h-8 flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-75'
+      aria-label={`Remove ${card.name}`}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+    </button>
+
   </div>
   );
 };
@@ -76,6 +86,23 @@ export default function Home() {
   const [jsonArray, setJsonArray] = useState<string | null>(null);
 
   
+  const handleDeleteCard = async (cardId: string) => {
+    try {
+    const response = await axios.delete('/api/deleteCard', { data: { id: cardId } });
+    if (response.status !== 200) {
+        throw new Error('Failed to delete card from the database.');
+    }
+      // console.log('Card deleted successfully:', response.data);
+      setCardCollection((prevCollection) => prevCollection.filter(card => card.id !== cardId));
+      setError(null); 
+    } catch (err: any) {
+      console.error('Error deleting card:', err.message);
+      setError('Failed to delete card. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -88,7 +115,7 @@ export default function Home() {
         }
         const responseData = await localResponse.json();
 
-        console.log('Response data:', responseData);
+        // console.log('Response data:', responseData);
 
         const jsonArray = JSON.stringify(responseData);
         setJsonArray(jsonArray);
@@ -100,17 +127,17 @@ export default function Home() {
           },
           body: jsonArray,
         });
-        console.log('Scryfall response:', scryfallResponse);
+        // console.log('Scryfall response:', scryfallResponse);
 
         if (!scryfallResponse.ok) {
           throw new Error('Failed to fetch card data from Scryfall.');
         }
 
         const scryfallData = await scryfallResponse.json();
-        console.log('Scryfall data:', scryfallData.data);
+        // console.log('Scryfall data:', scryfallData.data);
         setCardCollection(scryfallData.data);
-        console.log('Has more:', scryfallData.has_more);
-        console.log('Next page:', scryfallData.next_page);
+        // console.log('Has more:', scryfallData.has_more);
+        // console.log('Next page:', scryfallData.next_page);
 
       } catch (err: any) {
         setError(err.message);
@@ -140,7 +167,7 @@ export default function Home() {
         {!loading && !error && (
           <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
             {cardCollection.map((card) => (
-              <Card key={card.id} card={card} />
+              <Card key={card.id} card={card} onRemove={handleDeleteCard} />
             ))}
           </div>
         )}
