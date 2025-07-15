@@ -58,11 +58,14 @@ export default function Home() {
           throw new Error('Failed to fetch card identifiers from the database.');
         }
         const responseData = await localResponse.json();
-
-
+        console.log("Response data:", responseData);
 
         // Transform the response data to JSON array
         const cardsArray = responseData.cards;
+        console.log("Cards array:", cardsArray);
+        const oneCard = cardsArray[0];
+        console.log("One card:", oneCard);
+
         const jsonArray = JSON.stringify(cardsArray);
         // console.log("Transformed JSON array:", jsonArray);
 
@@ -71,7 +74,7 @@ export default function Home() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({"identifiers": [{"id": "683a5707-cddb-494d-9b41-51b4584ded69"},{"name": "Ancient Tomb"},{"set": "mrd","collector_number": "150"}]}),
+          body: JSON.stringify(oneCard),
         });
         console.log("Scryfall response:", scryfallResponse);
 
@@ -81,6 +84,7 @@ export default function Home() {
 
         const scryfallData = await scryfallResponse.json();
         setCards(scryfallData.data);
+        console.log("Scryfall data:", scryfallData.data);
 
       } catch (err: any) {
         setError(err.message);
