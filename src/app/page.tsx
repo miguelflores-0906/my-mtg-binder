@@ -88,7 +88,7 @@ export default function Home() {
   
   const handleDeleteCard = async (cardId: string) => {
     try {
-    const response = await axios.post('/api/deleteCard', { id: cardId })
+    const response = await axios.delete('/api/deleteCard', { data: { id: cardId } });
     if (response.status !== 200) {
         throw new Error('Failed to delete card from the database.');
     }
