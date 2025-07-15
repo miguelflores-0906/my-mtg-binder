@@ -207,7 +207,7 @@ export default function Add() {
         });
 
         if (response.status === 200) {
-          // alert('Card added successfully!');
+          alert('Card added successfully!');
         } else {
           throw new Error('Failed to add card');
         }
