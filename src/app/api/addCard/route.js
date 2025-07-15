@@ -9,10 +9,7 @@ export async function POST(request) {
 
     try {
         const newCard = new Card({
-            scryfallId,
-            name,
-            set_code,
-            collector_number
+            identifiers: [{id: scryfallId}, {name: name}, {set_code: set_code, collector_number: collector_number}]
         });
 
         await newCard.save();
