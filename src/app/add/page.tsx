@@ -219,7 +219,7 @@ export default function Add() {
     return (
       <div className='text-white min-h-screen flex flex-col items-center p-4 sm:p-6 font-sans'>
         <div className='w-full max-w-5xl mx-auto bg-gray-900 shadow-lg p-6'>
-          <h1 className='text-2xl font-bold text-white mb-4'>Add a Card to your Binder</h1>
+          <h1 className='text-2xl font-bold text-white mb-4'>Add a Card to the Binder</h1>
 
           {/* user input */}
           <div className='flex flex-col sm:flex-row gap-2 mb-6' ref={searchContainerRef}>
