@@ -5,13 +5,11 @@ import dbConnect from "@/utils/mongodb";
 export async function POST(request) {
     await dbConnect();
 
-    const {scryfallId, name, imageUrl} = await request.json();
+    const {scryfallId, name, set_code, collector_number} = await request.json();
 
     try {
         const newCard = new Card({
-            scryfallId,
-            name,
-            imageUrl
+            identifiers: [{id: scryfallId}, {name: name}, {set_code: set_code, collector_number: collector_number}]
         });
 
         await newCard.save();
