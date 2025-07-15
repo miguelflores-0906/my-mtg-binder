@@ -340,8 +340,8 @@ export default function Add() {
                     <h3 className='text-xl font-semibold mb-2'>Prices</h3>
                     <p className='text-lg'><span className='font-bold text-green-400'>USD:</span> ${chosenPrint.prices.usd || 'N/A'}</p>
                     <p className='text-lg'><span className='font-bold text-green-400'>USD Foil:</span> ${chosenPrint.prices.usd_foil || 'N/A'}</p>
-                    <p className='text-lg'><span className='font-bold text-blue-400'>PHPx50:</span> ₱{(Number(chosenPrint.prices.usd) * 50 )|| 'N/A'}</p>
-                    <p className='text-lg'><span className='font-bold text-blue-400'>PHPx50 Foil:</span> ₱{(Number(chosenPrint.prices.usd_foil) * 50 ) || 'N/A'}</p>
+                    <p className='text-lg'><span className='font-bold text-red-400'>PHPx50:</span> ₱{(Number(chosenPrint.prices.usd) * 50 )|| 'N/A'}</p>
+                    <p className='text-lg'><span className='font-bold text-red-400'>PHPx50 Foil:</span> ₱{(Number(chosenPrint.prices.usd_foil) * 50 ) || 'N/A'}</p>
                   </div>
 
                   <button
