@@ -2,14 +2,17 @@
 import React, { useState, useEffect, use } from 'react';
 import axios from 'axios';
 import { set } from 'mongoose';
+import { json } from 'stream/consumers';
+import { stringify } from 'querystring';
 
 interface CardIdentifier {
-  scryfallId: string;
+  id: string;
   name: string;
   set: string;
   collector_number: string;
 }
 
+// 2. Interface for the object we send TO Scryfall's collection endpoint
 interface ScryfallRequestIdentifier {
   id?: string;
   name?: string;
@@ -17,6 +20,7 @@ interface ScryfallRequestIdentifier {
   collector_number?: string;
 }
 
+// 3. Interface for the full card data we get back FROM Scryfall
 interface ScryfallCard {
   id: string;
   name: string;
@@ -49,47 +53,27 @@ export default function Home() {
         setLoading(true);
         setError(null);
 
-        // --- Step 1: Fetch the list of identifiers from your own backend ---
         const localResponse = await fetch('/api/getIds');
         if (!localResponse.ok) {
-          throw new Error('Failed to fetch card identifiers from your database.');
+          throw new Error('Failed to fetch card identifiers from the database.');
         }
         const responseData = await localResponse.json();
 
-        console.log("Data received from /api/get-identifiers:", responseData);
 
-        const identifiersFromDB: CardIdentifier[] = Array.isArray(responseData) ? responseData : responseData.data || [];
 
-        if (!Array.isArray(identifiersFromDB)) {
-            throw new TypeError("Data received from the backend is not an array.");
-        }
-        console.log("Identifiers from DB:", identifiersFromDB);
-
-        if (identifiersFromDB.length === 0) {
-          setCards([]);
-          setLoading(false); 
-          setError('No card identifiers found in the database.');
-          return;
-        }
-
-        const scryfallRequestIdentifiers: ScryfallRequestIdentifier[] = identifiersFromDB.map(card => ({
-          id: card.scryfallId,
-          name: card.name,
-          set: card.set,
-          collector_number: card.collector_number,
-        }));
-
-        console.log("Prepared identifiers for Scryfall:", scryfallRequestIdentifiers);
+        // Transform the response data to JSON array
+        const cardsArray = responseData.cards;
+        const jsonArray = JSON.stringify(cardsArray);
+        // console.log("Transformed JSON array:", jsonArray);
 
         const scryfallResponse = await fetch('https://api.scryfall.com/cards/collection', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ identifiers: scryfallRequestIdentifiers }),
+          body: JSON.stringify({"identifiers": [{"id": "683a5707-cddb-494d-9b41-51b4584ded69"},{"name": "Ancient Tomb"},{"set": "mrd","collector_number": "150"}]}),
         });
         console.log("Scryfall response:", scryfallResponse);
-        console.info("Scryfall response status:", scryfallResponse);
 
         if (!scryfallResponse.ok) {
           throw new Error('Failed to fetch card data from Scryfall.');
@@ -117,7 +101,6 @@ export default function Home() {
   }
 
   return (
-    <>
-    </>
+    <></>
   );
 }

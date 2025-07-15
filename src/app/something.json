@@ -1,9 +1,8 @@
-{
-    "identifiers":[
-        {
-            "id":"674e1b0f-c2e5-4b75-817d-19ab5f734139"
-        },
-        {"id":"8d1691bd-5194-4f1e-981f-6d5ef808ed4e"}
-    ]
 
-}
+{"identifiers": [{"id": "683a5707-cddb-494d-9b41-51b4584ded69"},{"name": "Ancient Tomb"},{"set": "mrd","collector_number": "150"}]}
+
+[
+    {"identifiers":[{"id":"4afdc65d-3c97-47af-83fa-df340389802e"},{"name":"Nekusar, the Mindrazer"},{"set_code":"cmm","collector_number":"349"}]},
+    {"identifiers":[{"id":"674e1b0f-c2e5-4b75-817d-19ab5f734139"},{"name":"Nekusar, the Mindrazer"},{"set_code":"sld","collector_number":"1301"}]},
+    {"identifiers":[{"id":"8d1691bd-5194-4f1e-981f-6d5ef808ed4e"},{"name":"Nekusar, the Mindrazer"},{"set_code":"cmr","collector_number":"529"}]}
+]

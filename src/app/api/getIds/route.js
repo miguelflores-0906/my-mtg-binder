@@ -6,16 +6,11 @@ export async function GET(request) {
     await dbConnect();
 
     try {
-        const cards = await Card.find({}, { scryfallId: 1, name: 1, set_code: 1, collector_number: 1 });
+        // Fetch all cards from the database
+        const cards = await Card.find({}, { identifiers: 1, _id: 0 });
 
-        const cardIds = cards.map(card => ({
-            scryfallId: card.scryfallId,
-            name: card.name,
-            set_code: card.set_code,
-            collector_number: card.collector_number
-        }));
-
-        return NextResponse.json(cardIds, { status: 200 });
+        // Return the identifiers as a JSON response
+        return NextResponse.json({ cards }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ message: "Error fetching cards from database" }, { status: 500 });
     }
