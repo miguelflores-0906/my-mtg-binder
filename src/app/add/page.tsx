@@ -204,9 +204,6 @@ export default function Add() {
       try {
         const response = await axios.post('/api/addCard', {
           scryfallId: chosenPrint.id,
-          name: chosenPrint.name,
-          set_code: chosenPrint.set,
-          collector_number: chosenPrint.collector_number,
         });
 
         if (response.status === 200) {

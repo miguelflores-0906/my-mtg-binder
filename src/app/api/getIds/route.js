@@ -7,10 +7,10 @@ export async function GET(request) {
 
     try {
         // Fetch all cards from the database
-        const cards = await Card.find({}, { identifiers: 1, _id: 0 });
+        const identifiers = await Card.find({}, { id: 1, _id: 0 }).lean();
 
         // Return the identifiers as a JSON response
-        return NextResponse.json({ cards }, { status: 200 });
+        return NextResponse.json({ identifiers }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ message: "Error fetching cards from database" }, { status: 500 });
     }
