@@ -5,39 +5,8 @@ import { set } from 'mongoose';
 import { json } from 'stream/consumers';
 import { stringify } from 'querystring';
 
-interface CardIdentifier {
-  id: string;
-  name: string;
-  set: string;
-  collector_number: string;
-}
-
-// 2. Interface for the object we send TO Scryfall's collection endpoint
-interface ScryfallRequestIdentifier {
-  id?: string;
-  name?: string;
-  set?: string;
-  collector_number?: string;
-}
-
-// 3. Interface for the full card data we get back FROM Scryfall
-interface ScryfallCard {
-  id: string;
-  name: string;
-  image_uris?: {
-    normal: string;
-    large: string;
-  };
-  prices: {
-    usd: string | null;
-  };
-  card_faces?: Array<{
-    name: string;
-    image_uris?: {
-      normal: string;
-      large: string;
-    };
-  }>;
+interface identifiers {
+  identifiers: string[];
 }
 
 
@@ -58,13 +27,24 @@ export default function Home() {
           throw new Error('Failed to fetch card identifiers from the database.');
         }
         const responseData = await localResponse.json();
-        console.log("Response data:", responseData);
+        // console.log("Response data:", responseData);
 
         // Transform the response data to JSON array
         const cardsArray = responseData.cards;
-        console.log("Cards array:", cardsArray);
+        // console.log("Cards array:", cardsArray);
         const oneCard = cardsArray[0];
-        console.log("One card:", oneCard);
+        // console.log("One card:", oneCard);
+        const oneCardIdentifiers = oneCard.identifiers;
+        // console.log("One card identifiers:", oneCardIdentifiers);
+
+        // for each card in cardsArray, extract cardsArray[i].identifiers and then add to an identifiers object
+        // so that the resulting JSON Array is like this: {'identifiers': [{id1, name1, {set1, collector_number1}}, {id2, name2, {set2, collector_number2}}]}
+        const identifiersObject = { identifiers: [] as string[] };
+        cardsArray.forEach((card: any) => {
+          identifiersObject.identifiers.push(card.identifiers);
+        });
+        console.log("Identifiers object:", identifiersObject);
+        
 
         const jsonArray = JSON.stringify(cardsArray);
         // console.log("Transformed JSON array:", jsonArray);
